@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Translation</title>
+    <style>
+    body {
+    width: 500px;
+    margin: auto;
+    font-family: 'Open Sans', sans-serif;
+    background-color: palevioletred;
+  }
+  div {
+    background-color: transparent;
+  }
+
+  fieldset {
+    display: block;
+    -webkit-margin-start: 10px;
+    -webkit-margin-end: 10px;
+    -webkit-padding-before: 1em;
+    -webkit-padding-start:  1em;
+    -webkit-padding-end: 1em;
+    -webkit-padding-after: 1em;
+    border: 0px;
+    border-image-source: initial;
+    border-image-slice: initial;
+    border-image-width: initial;
+    border-image-outset: initial;
+    border-image-repeat: initial;
+    min-width: -webkit-min-content;
+    padding: 30px;
+    font-family: Verdana;
+    font-size: 25px;
+    color: #4b545f;
+    background-color: palevioletred;
+  }
+  .ghost-input, p {
+    display: block;
+    font-weight:300;
+    width: 100%;
+    font-size: 25px;
+    border:0px;
+    outline: none;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #4b545f;
+    font-family: Verdana;
+    padding: 15px 15px;
+    margin: auto;
+    -webkit-transition: all 0.1s ease-in-out;
+    -moz-transition: all 0.1s ease-in-out;
+    -ms-transition: all 0.1s ease-in-out;
+    -o-transition: all 0.1s ease-in-out;
+    transition: all 0.1s ease-in-out;
+  }
+  .ghost-input:focus {
+    border-bottom:1px solid grey;
+  }
+  .ghost-button {
+    background-color: grey;
+    border:2px solid black;
+    padding:10px 30px;
+    width: 75%;
+    min-width: 30px;
+    margin: 50px 0px 0px 50px;
+    -webkit-transition: all 0.1s ease-in-out;
+    -moz-transition: all 0.1s ease-in-out;
+    -ms-transition: all 0.1s ease-in-out;
+    -o-transition: all 0.1s ease-in-out;
+    transition: all 0.1s ease-in-out;
+  }
+  .ghost-button:hover {
+    border:2px solid #515151;
+  }
+  p {
+    color: black;
+    margin: 10px;
+  }
+
+  b.text1 {
+    color: #0caff0;
+  }
+
+  b.text2 {
+    color: #820cf0;
+  }
+    </style>
+  </head>
+  <body>
+      <fieldset>
+        <form action="/" method="post">
+          <input name="input" type="text" class="ghost-input" placeholder="Enter English Text" required>
+          <input type="submit" class="ghost-button" value="Translate to Irish">
+        </form>
+        <% if(translation !== null){ %>
+            <div>
+                <div style= "background-color:white; float: left;"><p>The text you entered was <b class= "text1"><%= input %></b> </p></div>
+                
+               <div style = "background-color:white; float: right;"><p> According to google translate, the Irish translation is <b class="text2"><%= translation %></b></p></div>
+               <form action="/1" method="post">
+                <input name="input" type="text" class="ghost-input" value=<%= translation %> required>
+                <input type="submit" class="ghost-button" value="Translate Result Back to English">
+              </form>
+            </div>
+            <% if(translation !== null){ %>
+                <div>
+                    <div style= "background-color:white; float: left;"><p>The translation of the text you entered was <b class= "text2"><%= translation %></b> </p></div>
+                    
+                   <div style = "background-color:white; float: right;"><p> According to google translate, the English translation is <b class="text1"><%= translation1 %></b></p></div>
+                   
+                </div>
+              <% } %>
+          <% } %>
+          <% if(error !== null){ %>
+            <p><%= error %></p>
+          <% } %>
+      </fieldset>
+      
+  </body>
+</html>
