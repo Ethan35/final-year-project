@@ -34,7 +34,7 @@
     padding: 30px;
     font-family: Verdana;
     font-size: 25px;
-    color: #4b545f;
+    color: black;
     background-color: palevioletred;
   }
   .ghost-input, p {
@@ -81,12 +81,20 @@
     margin: 10px;
   }
 
-  b.text1 {
+  p.text1 {
     color: #0caff0;
   }
 
-  b.text2 {
+  p.text2 {
     color: #820cf0;
+  }
+
+  p.text3 {
+    color: #f00cdd;
+  }
+
+  p.text4 {
+    color: black;
   }
     </style>
   </head>
@@ -96,28 +104,17 @@
           <input name="input" type="text" class="ghost-input" placeholder="Enter English Text" required>
           <input type="submit" class="ghost-button" value="Translate to Irish">
         </form>
-        <% if(translation !== null){ %>
+        <%if(text1 !== null && text2 !== null && text3 !== null){%>
             <div>
-                <div style= "background-color:white; float: left;"><p>The text you entered was <b class= "text1"><%= input %></b> </p></div>
-                
-               <div style = "background-color:white; float: right;"><p> According to google translate, the Irish translation is <b class="text2"><%= translation %></b></p></div>
-               <form action="/1" method="post">
-                <input name="input" type="text" class="ghost-input" value=<%= translation %> required>
-                <input type="submit" class="ghost-button" value="Translate Result Back to English">
-              </form>
+                <div style= "background-color:white;"><p class= "text1"><%=text1%></p></div>
+                <div style= "background-color:white;"><p class= "text2"><%=text2%></p></div>
+                <div style= "background-color:white;"><p class= "text3"><%=text3%></p></div>
+                <div style= "background-color:white;"><p class= "text4"><%=text4%></p></div>
             </div>
-            <% if(translation !== null){ %>
-                <div>
-                    <div style= "background-color:white; float: left;"><p>The translation of the text you entered was <b class= "text2"><%= translation %></b> </p></div>
-                    
-                   <div style = "background-color:white; float: right;"><p> According to google translate, the English translation is <b class="text1"><%= translation1 %></b></p></div>
-                   
-                </div>
-              <% } %>
-          <% } %>
-          <% if(error !== null){ %>
-            <p><%= error %></p>
-          <% } %>
+            <%}%>
+          <%if(error !== null){%>
+            <p><%=error%></p>
+          <%}%>
       </fieldset>
       
   </body>
