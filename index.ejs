@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html> 
+<html> 
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,11 +7,11 @@
     <title>Translation</title>
     <style>
     body {
-    width: 500px;
+    width: 1000px;
     margin: auto;
     font-family: 'Open Sans', sans-serif;
     background-color: palevioletred;
-  }
+  } 
   div {
     background-color: transparent;
   }
@@ -63,10 +63,12 @@
   .ghost-button {
     background-color: grey;
     border:2px solid black;
-    padding:10px 30px;
-    width: 75%;
+    padding:5px 5px;
+    font-family: Verdana;
+    font-size: 25px;
+    width: 200px;
     min-width: 30px;
-    margin: 50px 0px 0px 50px;
+    margin: auto;
     -webkit-transition: all 0.1s ease-in-out;
     -moz-transition: all 0.1s ease-in-out;
     -ms-transition: all 0.1s ease-in-out;
@@ -78,7 +80,6 @@
   }
   p {
     color: black;
-    margin: 10px;
   }
 
   p.text1 {
@@ -96,21 +97,38 @@
   p.text4 {
     color: black;
   }
+
+  p.text5 {
+    color: black;
+  }
     </style>
   </head>
   <body>
       <fieldset>
         <form action="/" method="post">
           <input name="input" type="text" class="ghost-input" placeholder="Enter English Text" required>
-          <input type="submit" class="ghost-button" value="Translate to Irish">
+          <input type="submit" class="ghost-button" value="Google Translate">
         </form>
-        <%if(text1 !== null && text2 !== null && text3 !== null){%>
-            <div>
-                <div style= "background-color:white;"><p class= "text1"><%=text1%></p></div>
-                <div style= "background-color:white;"><p class= "text2"><%=text2%></p></div>
-                <div style= "background-color:white;"><p class= "text3"><%=text3%></p></div>
-                <div style= "background-color:white;"><p class= "text4"><%=text4%></p></div>
-            </div>
+        <%if(text1 !== null && text2 !== null && text3 !== null && text4 !== null && text5 !== null){%>
+            <table style="width:1000px;">
+              <tr><p>Google Translate English-to-Irish</p></tr>
+              <tr>
+                <td style="width:50%;"><div style= "background-color:white;"><p class= "text1"><%=text1%></p></div></td>
+                <td style="width:50%;"><div style= "background-color:white;"><p class= "text2"><%=text2%></p></div></td>
+                
+              </tr> 
+            </table>
+            <table style="width:1000px;">
+              <tr><p>Google Translate Irish-to-English</p></tr> 
+              <tr>
+                  <td style="width:50%;"><div style= "background-color:white;"><p class= "text2"><%=text2%></p></div></td>
+                  <td style="width:50%;"><div style= "background-color:white;"><p class= "text3"><%=text3%></p></div></td> 
+                  
+              </tr>  
+            </table>
+            <div><p>Analysis of Google Translate Results</p></div>
+            <div style= "background-color:white; margin:0px;"><p class= "text4"><%=text4%></p></div>
+            <div style= "background-color:white; margin:0px;"><p class= "text5"><%=text5%></p></div>
             <%}%>
           <%if(error !== null){%>
             <p><%=error%></p>
