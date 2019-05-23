@@ -12,10 +12,59 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 var tagger = posTagger();
 
+var shortNounList = [ 
+    ["man","fear"],
+    ["woman","bean"],
+    ["cat","cat"],
+    ["dog","madra"],
+    ["bird","éan"],
+    ["sandwich","ceapaire"],
+    ["shop","siopa"],
+    ["school","scoil"],
+    ["road","bóthar"],
+    ["window","fuinneog"],
+    ["story","scéal"],
+    ["food","bia"],
+    ["cake","cáca"],
+    ["cake","císte"],
+    ["apple","úll"],
+    ["sentence","abairt"],
+    ["Irish","Gaeilge"],
+    ["English","Béarla"],
+    ["bed","leaba"],
+    ["house","teach"]
+];
+
+var shortAdjList = [
+
+    ["big","mór"],
+    ["small","beag"],
+    ["tall","ard"],
+    ["short","gearr"],
+    ["long","fada"],
+    ["red","dearg"],
+    ["early","luath"],
+    ["late","déanach"],
+    ["blue","gorm"],
+    ["green","glas"],
+    ["yellow","buí"],
+    ["purple","corcra"],
+    ["brown","donn"],
+    ["expensive","costasach"],
+    ["free","saor"],
+    ["quiet","ciúin"],
+    ["cold","fuar"],
+    ["hot","te"],
+    ["old","sean"],
+    ["young","óg"],
+    ["cheap","saor"]
+]
+  
 var shortVerbList = [ 
     ["be","bí"],
     ["do","déan"],
     ["say","abair"],
+    ["eat", "ith"],
     ["go","téigh"],
     ["get","faigh"],
     ["make","déan"],
@@ -25,29 +74,26 @@ var shortVerbList = [
     ["come","tar"],
     ["look","féach"],
     ["use","úsáid"],
-    ["find","aims"],
+    ["find","aimsigh"],
     ["give","tabhair"],
     ["tell","inis"],
-    ["tell","ins"],
     ["work","obair"],
     ["call","glaoch"],
-    ["ask","fiafr"],
-    ["feel","moth"],
-    ["become","éir"],
+    ["ask","fiafraigh"],
+    ["feel","mothaigh"],
+    ["become","éirigh"],
     ["leave","fág"],
     ["put","cuir"],
-    ["keep","coinn"],
+    ["keep","coinnigh"],
     ["let","lig"],
-    ["begin","tos"],
-    ["help","cuid"],
+    ["begin","tosaigh"],
+    ["help","cuidigh"],
     ["talk","labhair"],
-    ["talk","labhr"],
     ["turn","cas"],
-    ["start","tos"],
+    ["start","tosaigh"],
     ["show","taispeáin"],
     ["hear","clois"],
     ["play","imir"],
-    ["play","imr"],
     ["run","rith"],
     ["move","bog"],
     ["believe","creid"],
@@ -69,11 +115,17 @@ var shortVerbList = [
     ["speak","labhair"],
     ["read","léigh"],
     ["allow","lig"],
+    ["succeed", "éirigh"],
+    ["buy", "ceannaigh"],
+    ["meet", "buail"],
+    ["add", "cuir"],
+    ["put", "cuir"],
     ["spend","caith"],
     ["throw","caith"],
     ["wear","caith"],
     ["smoke","caith"],
     ["grow","fás"],
+    ["break", "bris"],
     ["open","oscail"],
     ["close","dún"],
     ["walk","siúl"],
@@ -89,16 +141,17 @@ var shortVerbList = [
     ["remain","fan"],
     ["suggest","mol"],
     ["drink","ól"],
-    ["raise","arda"],
+    ["clean", "glan"],
+    ["raise","ardaigh"],
     ["sell","díol"],
-    ["decide","socra"],
+    ["decide","socraigh"],
     ["catch","beir"],
     ["pull","tarraing"]
-  ];
+  ]; //this list contains 84 verbs
 
 
 app.get('/', function (req, res) {
-    res.render('index.ejs', {text1: null, text2: null, text3: null, text4: null, text5: null, error: null});
+    res.render('index.ejs', {text1: null, text2: null, text3: null, text4: null, text5: null, text6: null, text7: null, error: null});
   })
   
 app.listen(3000, function () {
@@ -107,236 +160,547 @@ app.listen(3000, function () {
 
 app.post('/', function (req, res) {
     var input = req.body.input;
-    var verb = "";
-    var englishVerb = "";
-    var irishVerb = "";
-    var irishPos = "";
-    var irishVerbResult = "";
+    
 
     var tagged = tagger.tagSentence(input);
 
+    var verb = "";
+    var englishVerbs = [];
+    var englishNouns = [];
+    var irishNouns = [];
+    var englishAdjs = [];
+    var irishAdjs = [];
+    var irishVerbResult = [];
+
+    var q = 0;
+    var z = 0;
+    var y = 0;
+
+    var englishVerb = "";
+    var irishVerb = "";
+    var irishPos = "";
+
+    var englishNoun = "";
+    var irishNoun = "";
+
+    var englishAdj = "";
+    var irishAdj = "";
+    
+    var irishVerbResult1 = "";
+    var go = false;
+    
+
     for(i=0; i<tagged.length; i++)
     {
+            console.log(tagged[i]);
 
-        console.log(tagged[i]);
-
-        if(tagged[i].pos == "VBD")
-        {
-            verb = tagged[i].value;
-            englishVerb = tagged[i].lemma;
-            irishPos = "+Verb+VTI+PastInd+Len";
-            
-            for(j=0; j<shortVerbList.length; j++)
+            if(tagged[i].pos == "NN")
             {
-                if(shortVerbList[j][0]==englishVerb)
+                englishNoun = tagged[i].value;
+
+                for(j=0; j<shortNounList.length; j++)
                 {
-                    irishVerb = shortVerbList[j][1];
+                    if(shortNounList[j][0]==englishNoun)
+                    {
+                        irishNoun = shortNounList[j][1];
+                    }
+                }
+
+                englishNouns[z] = englishNoun;
+                irishNouns[z] = irishNoun;
+
+                z++;
+
+            }
+
+            if(tagged[i].pos == "JJ")
+            {
+                englishAdj = tagged[i].value;
+
+                for(j=0; j<shortAdjList.length; j++)
+                {
+                    if(shortAdjList[j][0]==englishAdj)
+                    {
+                        irishAdj = shortAdjList[j][1];
+                    }
+                }
+
+                englishAdjs[y] = englishAdj;
+                irishAdjs[y] = irishAdj;
+
+                y++;
+
+            }
+           
+
+            if(tagged[i].pos == "VBD")
+            {
+                verb = tagged[i].value;
+                englishVerb = tagged[i].lemma;
+
+                console.log(englishVerb+"past"+i);
+                
+                for(j=0; j<shortVerbList.length; j++)
+                {
+                    if(shortVerbList[j][0]==englishVerb)
+                    {
+                        irishVerb = shortVerbList[j][1];
+                    }
+                }
+
+                console.log(irishVerb);
+
+                if((irishVerb.indexOf("a")==0)||(irishVerb.indexOf("e")==0)||(irishVerb.indexOf("i")==0)||(irishVerb.indexOf("o")==0)||(irishVerb.indexOf("u")==0)||(irishVerb.indexOf("á")==0)||(irishVerb.indexOf("é")==0)||(irishVerb.indexOf("í")==0)||(irishVerb.indexOf("ó")==0)||(irishVerb.indexOf("ú")==0))
+                {
+                    irishPos = "+Verb+Vow+PastInd+Len";
+                }
+                else
+                {
+                    irishPos = "+Verb+PastInd+Len";
                 }
             }
-        }
 
-        if(tagged[i].pos == "VBZ")
-        {
-            verb = tagged[i].value;
-            englishVerb = tagged[i].lemma;
-            irishPos = "+Verb+VTI+PresInd";
-            
-            for(j=0; j<shortVerbList.length; j++)
+            if(tagged[i].pos == "VBP")
             {
-                if(shortVerbList[j][0]==englishVerb)
+                verb = tagged[i].value;
+                englishVerb = tagged[i].lemma;
+                
+                console.log(englishVerb+"present" +i);
+                
+                for(j=0; j<shortVerbList.length; j++)
                 {
-                    irishVerb = shortVerbList[j][1];
+                    if(shortVerbList[j][0]==englishVerb)
+                    {
+                        irishVerb = shortVerbList[j][1];
+                    }
+                }
+
+                if((irishVerb.indexOf("a")==0)||(irishVerb.indexOf("e")==0)||(irishVerb.indexOf("i")==0)||(irishVerb.indexOf("o")==0)||(irishVerb.indexOf("u")==0)||(irishVerb.indexOf("á")==0)||(irishVerb.indexOf("é")==0)||(irishVerb.indexOf("í")==0)||(irishVerb.indexOf("ó")==0)||(irishVerb.indexOf("ú")==0))
+                {
+                    irishPos = "+Verb+Vow+PresInd";
+                }
+                else
+                {
+                    irishPos = "+Verb+PresInd";
+                }
+
+            }
+
+
+            if(tagged[i].pos == "VBZ")
+            {
+                verb = tagged[i].value;
+                englishVerb = tagged[i].lemma;
+                
+                console.log(englishVerb+"present"+i);
+                
+                for(j=0; j<shortVerbList.length; j++)
+                {
+                    if(shortVerbList[j][0]==englishVerb)
+                    {
+                        irishVerb = shortVerbList[j][1];
+                    }
+                }
+
+                if((irishVerb.indexOf("a")==0)||(irishVerb.indexOf("e")==0)||(irishVerb.indexOf("i")==0)||(irishVerb.indexOf("o")==0)||(irishVerb.indexOf("u")==0)||(irishVerb.indexOf("á")==0)||(irishVerb.indexOf("é")==0)||(irishVerb.indexOf("í")==0)||(irishVerb.indexOf("ó")==0)||(irishVerb.indexOf("ú")==0))
+                {
+                    irishPos = "+Verb+Vow+PresInd";
+                }
+                else
+                {
+                    irishPos = "+Verb+PresInd";
                 }
             }
-        }
 
-        if(tagged[i].pos == "VBP" && tagged[i-1].value=="I")
-        {
-            verb = tagged[i].value;
-            englishVerb = tagged[i].lemma;
-            irishPos = "+Verb+VTI+PresInd+1P+Sg";
-            
-            for(j=0; j<shortVerbList.length; j++)
+         if(i>0&&tagged[i].pos == "VBP" && tagged[i-1].value=="I")
             {
-                if(shortVerbList[j][0]==englishVerb)
+                verb = tagged[i].value;
+                englishVerb = tagged[i].lemma;
+                
+                console.log(englishVerb+"present1"+i);
+
+                
+                for(j=0; j<shortVerbList.length; j++)
                 {
-                    irishVerb = shortVerbList[j][1];
+                    if(shortVerbList[j][0]==englishVerb)
+                    {
+                        irishVerb = shortVerbList[j][1];
+                    }
+                }
+
+                if((irishVerb.indexOf("a")==0)||(irishVerb.indexOf("e")==0)||(irishVerb.indexOf("i")==0)||(irishVerb.indexOf("o")==0)||(irishVerb.indexOf("u")==0)||(irishVerb.indexOf("á")==0)||(irishVerb.indexOf("é")==0)||(irishVerb.indexOf("í")==0)||(irishVerb.indexOf("ó")==0)||(irishVerb.indexOf("ú")==0))
+                {
+                    irishPos = "+Verb+Vow+PresInd+1P+Sg";
+                }
+                else
+                {
+                    irishPos = "+Verb+PresInd+1P+Sg";
                 }
             }
-        }
 
-        if(tagged[i].pos == "VBD" && (tagged[i-1].value=="we" || tagged[i-1].value=="We"))
-        {
-            verb = tagged[i].value;
-            englishVerb = tagged[i].lemma;
-            irishPos = "+Verb+VTI+PastInd+1P+Pl+Len";
-            
-            for(j=0; j<shortVerbList.length; j++)
+            if(i>0&&tagged[i].pos == "VBD" && (tagged[i-1].value=="we" || tagged[i-1].value=="We"))
             {
-                if(shortVerbList[j][0]==englishVerb)
+                verb = tagged[i].value;
+                englishVerb = tagged[i].lemma;
+                
+                console.log(englishVerb+"past2" +i);
+                
+                for(j=0; j<shortVerbList.length; j++)
                 {
-                    irishVerb = shortVerbList[j][1];
+                    if(shortVerbList[j][0]==englishVerb)
+                    {
+                        irishVerb = shortVerbList[j][1];
+                    }
+                }
+
+                if((irishVerb.indexOf("a")==0)||(irishVerb.indexOf("e")==0)||(irishVerb.indexOf("i")==0)||(irishVerb.indexOf("o")==0)||(irishVerb.indexOf("u")==0)||(irishVerb.indexOf("á")==0)||(irishVerb.indexOf("é")==0)||(irishVerb.indexOf("í")==0)||(irishVerb.indexOf("ó")==0)||(irishVerb.indexOf("ú")==0))
+                {
+                    irishPos = "+Verb+Vow+PastInd+1P+Pl+Len";
+                }
+                else
+                {
+                    irishPos = "+Verb+PastInd+1P+Pl+Len";
                 }
             }
-        }
 
-        if(tagged[i].pos == "VBP" && (tagged[i-1].value=="we" || tagged[i-1].value=="We"))
-        {
-            verb = tagged[i].value;
-            englishVerb = tagged[i].lemma;
-            irishPos = "+Verb+VTI+PresInd+1P+Pl";
-            
-            for(j=0; j<shortVerbList.length; j++)
+            if(i>0&&tagged[i].pos == "VBP" && (tagged[i-1].value=="we" || tagged[i-1].value=="We"))
             {
-                if(shortVerbList[j][0]==englishVerb)
+                verb = tagged[i].value;
+                englishVerb = tagged[i].lemma;
+                
+                console.log(englishVerb+"present2"+i);
+
+                for(j=0; j<shortVerbList.length; j++)
                 {
-                    irishVerb = shortVerbList[j][1];
+                    if(shortVerbList[j][0]==englishVerb)
+                    {
+                        irishVerb = shortVerbList[j][1];
+                    }
+                }
+
+                if((irishVerb.indexOf("a")==0)||(irishVerb.indexOf("e")==0)||(irishVerb.indexOf("i")==0)||(irishVerb.indexOf("o")==0)||(irishVerb.indexOf("u")==0)||(irishVerb.indexOf("á")==0)||(irishVerb.indexOf("é")==0)||(irishVerb.indexOf("í")==0)||(irishVerb.indexOf("ó")==0)||(irishVerb.indexOf("ú")==0))
+                {
+                    irishPos = "+Verb+Vow+PresInd+1P+Pl";
+                }
+                else
+                {
+                    irishPos = "+Verb+PresInd+1P+Pl";
+                }
+            } 
+
+            if(tagged[i].pos == "VBG")
+            {
+                verb = tagged[i].value;
+                englishVerb = tagged[i].lemma;
+                irishPos = "Verbal+Noun";
+
+                console.log(englishVerb+"verbalnoun"+i);
+                
+                for(j=0; j<shortVerbList.length; j++)
+                {
+                    if(shortVerbList[j][0]==englishVerb)
+                    {
+                        irishVerb = shortVerbList[j][1];
+                    }
                 }
             }
-        }
 
-        if(tagged[i].pos == "VB")
-        {
-            verb = tagged[i].value;
-            englishVerb = tagged[i].lemma;
-            irishPos = "+Verb+VTI+Imper+2P+Sg";
-            
-            for(j=0; j<shortVerbList.length; j++)
+            if(tagged[i].pos == "VB")
             {
-                if(shortVerbList[j][0]==englishVerb)
+                verb = tagged[i].value;
+                englishVerb = tagged[i].lemma;
+
+                console.log(englishVerb+"infinitive"+i);
+                
+                for(j=0; j<shortVerbList.length; j++)
                 {
-                    irishVerb = shortVerbList[j][1];
+                    if(shortVerbList[j][0]==englishVerb)
+                    {
+                        irishVerb = shortVerbList[j][1];
+                    }
+                }
+
+                if((irishVerb.indexOf("a")==0)||(irishVerb.indexOf("e")==0)||(irishVerb.indexOf("i")==0)||(irishVerb.indexOf("o")==0)||(irishVerb.indexOf("u")==0)||(irishVerb.indexOf("á")==0)||(irishVerb.indexOf("é")==0)||(irishVerb.indexOf("í")==0)||(irishVerb.indexOf("ó")==0)||(irishVerb.indexOf("ú")==0))
+                {
+                    irishPos = "+Verb+Vow+Imper+2P+Sg";
+                }
+                else
+                {
+                    irishPos = "+Verb+Imper+2P+Sg";
                 }
             }
-        }
 
-        if(tagged[i].pos == "VB" && tagged[i-1].value == "will")
-        {
-            verb = tagged[i].value;
-            englishVerb = tagged[i].lemma;
-            irishPos = "+Verb+VTI+FutInd";
-            
-            for(j=0; j<shortVerbList.length; j++)
+            if(i>0 && tagged[i].pos == "VB" && tagged[i-1].value == "will")
             {
-                if(shortVerbList[j][0]==englishVerb)
+                verb = tagged[i].value;
+                englishVerb = tagged[i].lemma;
+                
+                console.log(englishVerb+"future"+i);
+                
+                for(j=0; j<shortVerbList.length; j++)
                 {
-                    irishVerb = shortVerbList[j][1];
+                    if(shortVerbList[j][0]==englishVerb)
+                    {
+                        irishVerb = shortVerbList[j][1];
+                    }
+                }
+
+                if((irishVerb.indexOf("a")==0)||(irishVerb.indexOf("e")==0)||(irishVerb.indexOf("i")==0)||(irishVerb.indexOf("o")==0)||(irishVerb.indexOf("u")==0)||(irishVerb.indexOf("á")==0)||(irishVerb.indexOf("é")==0)||(irishVerb.indexOf("í")==0)||(irishVerb.indexOf("ó")==0)||(irishVerb.indexOf("ú")==0))
+                {
+                    irishPos = "+Verb+Vow+FutInd";
+                }
+                else
+                {
+                    irishPos = "+Verb+FutInd";
                 }
             }
-        }
 
-        if(tagged[i].pos == "VB" && tagged[i-1].value == "will" && (tagged[i-2].value=="we" || tagged[i-2].value=="We"))
-        {
-            verb = tagged[i].value;
-            englishVerb = tagged[i].lemma;
-            irishPos = "+Verb+VTI+FutInd+1P+Pl";
-            
-            for(j=0; j<shortVerbList.length; j++)
+          if(i>1 && tagged[i].pos == "VB" && tagged[i-1].value == "will" && (tagged[i-2].value=="we" || tagged[i-2].value=="We"))
             {
-                if(shortVerbList[j][0]==englishVerb)
+                verb = tagged[i].value;
+                englishVerb = tagged[i].lemma;
+                
+                console.log(englishVerb+"future2"+i);
+                
+                for(j=0; j<shortVerbList.length; j++)
                 {
-                    irishVerb = shortVerbList[j][1];
+                    if(shortVerbList[j][0]==englishVerb)
+                    {
+                        irishVerb = shortVerbList[j][1];
+                    }
+                }
+
+                if((irishVerb.indexOf("a")==0)||(irishVerb.indexOf("e")==0)||(irishVerb.indexOf("i")==0)||(irishVerb.indexOf("o")==0)||(irishVerb.indexOf("u")==0)||(irishVerb.indexOf("á")==0)||(irishVerb.indexOf("é")==0)||(irishVerb.indexOf("í")==0)||(irishVerb.indexOf("ó")==0)||(irishVerb.indexOf("ú")==0))
+                {
+                    irishPos = "+Verb+Vow+FutInd+1P+Pl";
+                }
+                else
+                {
+                    irishPos = "+Verb+FutInd+1P+Pl";
+                }
+            } 
+
+            if(i>0&&tagged[i].pos == "VB" && tagged[i-1].value == "would")
+            {
+                verb = tagged[i].value;
+                englishVerb = tagged[i].lemma;
+                
+                console.log(englishVerb+"conditional"+i);
+                
+                for(j=0; j<shortVerbList.length; j++)
+                {
+                    if(shortVerbList[j][0]==englishVerb)
+                    {
+                        irishVerb = shortVerbList[j][1];
+                    }
+                }
+
+                if((irishVerb.indexOf("a")==0)||(irishVerb.indexOf("e")==0)||(irishVerb.indexOf("i")==0)||(irishVerb.indexOf("o")==0)||(irishVerb.indexOf("u")==0)||(irishVerb.indexOf("á")==0)||(irishVerb.indexOf("é")==0)||(irishVerb.indexOf("í")==0)||(irishVerb.indexOf("ó")==0)||(irishVerb.indexOf("ú")==0))
+                {
+                    irishPos = "+Verb+Vow+Cond+Len";
+                }
+                else
+                {
+                    irishPos = "+Verb+Cond+Len";
                 }
             }
-        }
 
-        if(tagged[i].pos == "VB" && tagged[i-1].value == "would")
-        {
-            verb = tagged[i].value;
-            englishVerb = tagged[i].lemma;
-            irishPos = "+Verb+VTI+Cond+Len";
-            
-            for(j=0; j<shortVerbList.length; j++)
+          if(i>1&&tagged[i].pos == "VB" && tagged[i-1].value == "would" && tagged[i-2].value=="I")
             {
-                if(shortVerbList[j][0]==englishVerb)
+                verb = tagged[i].value;
+                englishVerb = tagged[i].lemma;
+                
+                console.log(englishVerb+"conditional1"+i);
+                
+                for(j=0; j<shortVerbList.length; j++)
                 {
-                    irishVerb = shortVerbList[j][1];
+                    if(shortVerbList[j][0]==englishVerb)
+                    {
+                        irishVerb = shortVerbList[j][1];
+                    }
+                }
+
+                if((irishVerb.indexOf("a")==0)||(irishVerb.indexOf("e")==0)||(irishVerb.indexOf("i")==0)||(irishVerb.indexOf("o")==0)||(irishVerb.indexOf("u")==0)||(irishVerb.indexOf("á")==0)||(irishVerb.indexOf("é")==0)||(irishVerb.indexOf("í")==0)||(irishVerb.indexOf("ó")==0)||(irishVerb.indexOf("ú")==0))
+                {
+                    irishPos = "+Verb+Vow+Cond+1P+Sg+Len";
+                }
+                else
+                {
+                    irishPos = "+Verb+Cond+1P+Sg+Len";
                 }
             }
-        }
 
-        if(tagged[i].pos == "VB" && tagged[i-1].value == "would" && tagged[i-2].value=="I")
-        {
-            verb = tagged[i].value;
-            englishVerb = tagged[i].lemma;
-            irishPos = "+Verb+VTI+Cond+1P+Sg+Len";
-            
-            for(j=0; j<shortVerbList.length; j++)
+            if(i>1&&tagged[i].pos == "VB" && tagged[i-1].value == "would" && (tagged[i-2].value=="we" || tagged[i-2].value=="We"))
             {
-                if(shortVerbList[j][0]==englishVerb)
+                verb = tagged[i].value;
+                englishVerb = tagged[i].lemma;
+
+                console.log(englishVerb+"conditional2"+i);
+                
+                
+                for(j=0; j<shortVerbList.length; j++)
                 {
-                    irishVerb = shortVerbList[j][1];
+                    if(shortVerbList[j][0]==englishVerb)
+                    {
+                        irishVerb = shortVerbList[j][1];
+                    }
+                }
+
+                if((irishVerb.indexOf("a")==0)||(irishVerb.indexOf("e")==0)||(irishVerb.indexOf("i")==0)||(irishVerb.indexOf("o")==0)||(irishVerb.indexOf("u")==0)||(irishVerb.indexOf("á")==0)||(irishVerb.indexOf("é")==0)||(irishVerb.indexOf("í")==0)||(irishVerb.indexOf("ó")==0)||(irishVerb.indexOf("ú")==0))
+                {
+                    irishPos = "+Verb+Vow+Cond+1P+Pl+Len";
+                }
+                else
+                {
+                    irishPos = "+Verb+Cond+1P+Pl+Len";
+                }
+            } 
+
+            if(tagged[i].lemma == "go")
+            {
+                go = true;
+
+                if(tagged[i].pos == "VBD")
+                {
+                    irishVerbResult1 = "chuaigh";
+                }
+                if(tagged[i].pos == "VBZ")
+                {
+                    irishVerbResult1 = "téann";
+                }
+
+                if(tagged[i].pos == "VBP")
+                {
+                    irishVerbResult1 = "téann";
+                }
+             if(i>0&&tagged[i].pos == "VBP" && tagged[i-1].value == "I")
+                {
+                    irishVerbResult1 = "téim";
+                } 
+                if(i>0&&tagged[i].pos == "VBP" && (tagged[i-1].value == "we" || tagged[i-1].value == "We"))
+                {
+                    irishVerbResult1 = "téimid";
+                } 
+                if(tagged[i].pos == "VB")
+                {
+                    irishVerbResult1 = "téigh";
+                }
+                if(i>0&&tagged[i].pos == "VB" && tagged[i-1].value == "will")
+                {
+                    irishVerbResult1 = "rachaidh";
+                }
+                if(i>0&&tagged[i].pos == "VB" && tagged[i-1].value == "would")
+                {
+                    irishVerbResult1 = "rachadh";
+                }
+             if(i>1&&tagged[i].pos == "VB" && tagged[i-1].value == "would" && tagged[i-2].value == "I")
+                {
+                    irishVerbResult1 = "rachainn";
+                } 
+                if(tagged[i].pos == "VBG")
+                {
+                    irishVerbResult1 = "ag dul";
                 }
             }
-        }
 
-        if(tagged[i].pos == "VB" && tagged[i-1].value == "would" && (tagged[i-2].value=="we" || tagged[i-2].value=="We"))
-        {
-            verb = tagged[i].value;
-            englishVerb = tagged[i].lemma;
-            irishPos = "+Verb+VTI+Cond+1P+Pl+Len";
             
-            for(j=0; j<shortVerbList.length; j++)
+        
+        if(tagged[i].pos=="VB"||tagged[i].pos=="VBG"||tagged[i].pos=="VBD"||tagged[i].pos=="VBP"||tagged[i].pos=="VBZ")
+        {
+            var command = "echo " + irishVerb + irishPos + " | flookup -a -x irishfst-min/allgenmin.fst";
+            var test = child_process.execSync(command);
+            var result = test.toString().trim();
+
+            englishVerbs[q] = tagged[i].value;
+
+            if(i>0 && tagged[i-1].value=="will")
             {
-                if(shortVerbList[j][0]==englishVerb)
-                {
-                    irishVerb = shortVerbList[j][1];
-                }
+                englishVerbs[q] = "will "+ tagged[i].value;
             }
+
+            if(i>0 && tagged[i-1].value=="would")
+            {
+                englishVerbs[q] = "would "+ tagged[i].value;
+            }
+
+            if(tagged[i].pos=="VBD"&&((result.indexOf("f")==0)||(result.indexOf("a")==0)||(result.indexOf("e")==0)||(result.indexOf("i")==0)||(result.indexOf("o")==0)||(result.indexOf("u")==0)||(result.indexOf("á")==0)||(result.indexOf("é")==0)||(result.indexOf("í")==0)||(result.indexOf("ó")==0)||(result.indexOf("ú")==0)))
+            {
+                irishVerbResult[q] = "d'"+result;
+            }
+            else
+            {
+                irishVerbResult[q] = result;
+            }
+            
+
+            console.log(irishVerbResult[q]);
+
+            if(go)
+            {
+                irishVerbResult[q] = irishVerbResult1;
+            }
+            q++;
         }
 
         
     }
-    var c1 = child_process.execSync("cd irishfst-min");
-    var c2 = child_process.execSync("ls");
-    //console.log(c2.toString());
-    var command = "echo " + irishVerb + irishPos + " | flookup -a -x irishfst-min/allgen.fst";
-    var test = child_process.execSync(command);
-    console.log("|"+test.toString()+"|");
-    if(irishVerbResult.indexOf("chuaigh")!==-1)
-    {
-        console.log("Irish verb has two results");
-    }
-    irishVerbResult = test.toString().trim();
-    console.log("|"+irishVerbResult+"|");
-    
 
     translate(req.body.input, {from: 'en', to: 'ga'}).then(res1 => {
         var t1 = res1.text;
         var t1LowerCase = t1.toLowerCase();
-        //console.log(t1LowerCase);
+
         translate(res1.text, {from: 'ga', to: 'en'}).then(res2 => {
             var t2 = res2.text;
             var text1 = input;  
             var text2 = t1;
             var text3 = t2;
-            var text4 = "There are no suggested changes to the translation.";
+            var text4 = "The English translation of the Irish is the same as the original text.";
             var text5 = "";
+            var text6 = "";
+            var text7 = "";
             if(input !== t2)
             { 
                 text4 = "The English translation of the Irish is not the same as the text you entered.";
             }
-            if(t1LowerCase.indexOf(irishVerbResult)==-1)
+
+            for(j=0;j<irishVerbResult.length;j++)
             {
+                console.log(irishVerbResult[j]);
+                if(t1LowerCase.indexOf(irishVerbResult[j])==-1)
+                {
                 
-                text5 += "The Irish translation might not contain the correct verb. The text you entered contained the verb \"" + verb + "\", which, in this context, could be translated as \"" + irishVerbResult + "\".";
+                text5 += "The text you entered contained the verb \"" + englishVerbs[j] + "\", which, in this context, could be translated as \"" + irishVerbResult[j] + "\". ";
                 
+                }
             }
-           /* var c = "would like";
-            if(input.indexOf(c)==-1 && t2.indexOf(c)!== -1)
+
+            for(j=0;j<irishNouns.length;j++)
             {
-                text4 += "\n";
-                text4 += "It seems that a conditional verb form was not translated correctly."
-            } */
+                if(t1LowerCase.indexOf(irishNouns[j])==-1)
+                {
+                
+                text6 += "The text you entered contained the noun \"" + englishNouns[j] + "\", which could be translated as \"" + irishNouns[j] + "\". ";
+                
+                }
+            }
 
-            res.render('index.ejs', {text1: text1, text2: text2, text3: text3, text4: text4, text5: text5, error: null});
+            for(j=0;j<irishAdjs.length;j++)
+            {
+                if(t1LowerCase.indexOf(irishAdjs[j])==-1)
+                {
+                
+                text7 += "The text you entered contained the adjective \"" + englishAdjs[j] + "\", which could be translated as \"" + irishAdjs[j] + "\". ";
+                
+                }
+            }
+
+            res.render('index.ejs', {text1: text1, text2: text2, text3: text3, text4: text4, text5: text5, text6: text6, text7: text7, error: null});
       })
-        
-  }).catch(err => {
-    res.render('index.ejs', {text1: null, text2: null, text3: null, text4: null, text5: null, error: 'Error, please try again'});
+    }).catch(err => {
+        res.render('index.ejs', {text1: null, text2: null, text3: null, text4: null, text5: null, text6: null, text7: null, error: 'Error, please try again'});
+    })
 
 
-})
 });
 
 
