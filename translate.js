@@ -11,57 +11,357 @@ app.use(express.static('/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 var tagger = posTagger();
-
-var shortNounList = [ 
-    ["man","fear"],
-    ["woman","bean"],
-    ["cat","cat"],
-    ["dog","madra"],
-    ["bird","éan"],
-    ["sandwich","ceapaire"],
-    ["shop","siopa"],
-    ["school","scoil"],
-    ["road","bóthar"],
-    ["window","fuinneog"],
-    ["story","scéal"],
-    ["food","bia"],
-    ["cake","cáca"],
-    ["cake","císte"],
-    ["apple","úll"],
-    ["sentence","abairt"],
-    ["Irish","Gaeilge"],
-    ["English","Béarla"],
-    ["bed","leaba"],
-    ["house","teach"]
-];
-
-var shortAdjList = [
-
-    ["big","mór"],
-    ["small","beag"],
-    ["tall","ard"],
-    ["short","gearr"],
-    ["long","fada"],
-    ["red","dearg"],
-    ["early","luath"],
-    ["late","déanach"],
-    ["blue","gorm"],
-    ["green","glas"],
-    ["yellow","buí"],
-    ["purple","corcra"],
-    ["brown","donn"],
-    ["expensive","costasach"],
-    ["free","saor"],
-    ["quiet","ciúin"],
-    ["cold","fuar"],
-    ["hot","te"],
-    ["old","sean"],
-    ["young","óg"],
-    ["cheap","saor"]
-]
   
 var shortVerbList = [ 
     ["be","bí"],
+    ["atomize", "adamhaigh"],
+    ["bury", "adhlaic"],
+    ["aerate", "aeraigh"],
+    ["air-condition", "aeroiriúnaigh"],
+    ["classify", "aicmigh"],
+    ["align", "ailínigh"],
+    ["amplify", "aimpligh"],
+    ["ensure", "áirithigh"],
+    ["inhabit", "áitrigh"],
+    ["import", "allmhairigh"],
+    ["bully", "ansmachtaigh"],
+    ["isolate", "aonraigh"],
+    ["insure", "árachaigh"],
+    ["harmonize", "armónaigh"],
+    ["dislodge", "asáitigh"],
+    ["exhale", "asanálaigh"],
+    ["evacuate", "aslonnaigh"],
+    ["reproduce", "atáirg"],
+    ["reunite", "athaontaigh"],
+    ["brand", "brandáil"],
+    ["load", "lódáil"],
+    ["mortgage", "morgáistigh"],
+    ["motorize", "mótaraigh"],
+    ["rake", "rácáil"],
+    ["ossify", "cnámhaigh"],
+    ["wound", "cneáigh"],
+    ["stabilize", "cobhsaigh"],
+    ["cook", "cócaráil"],
+    ["codify", "códaigh"],
+    ["export", "easpórtáil"],
+    ["acquit", "éigiontaigh"],
+    ["rain", "báistigh"],
+    ["batter", "batráil"],
+    ["blast", "bleaisteáil"],
+    ["impoverish", "bochtaigh"],
+    ["vulcanize", "bolcáinigh"],
+    ["bolt", "boltáil"],
+    ["adjudge", "breithnigh"],
+    ["fuel", "breoslaigh"],
+    ["embroider", "bróidnigh"],
+    ["broach", "bróitseáil"],
+    ["smelt", "bruithnigh"],
+    ["bomb", "buamáil"],
+    ["buckle", "búcláil"],
+    ["bottle", "buidéalaigh"],
+    ["standardize", "caighdeánaigh"],
+    ["calcify", "cailcigh"],
+    ["qualify", "cáiligh"],
+    ["charter", "cairtfhostaigh"],
+    ["camp", "campáil"],
+    ["can", "cannaigh"],
+    ["canonize", "canónaigh"],
+    ["license", "ceadúnaigh"],
+    ["square", "cearnaigh"],
+    ["paddle", "céaslaigh"],
+    ["wax", "ciar"],
+    ["kick", "ciceáil"],
+    ["apportion", "cionroinn"],
+    ["queue", "ciúáil"],
+    ["cube", "ciúbaigh"],
+    ["clout", "clabhtáil"],
+    ["clamp", "clampaigh"],
+    ["acclimatize", "clíomaigh"],
+    ["print", "clóbhuail"],
+    ["petrify", "clochraigh"],
+    ["print", "clóigh"],
+    ["hear", "clois"],
+    ["parboil", "cnagbheirigh"],
+    ["confiscate", "coigistigh"],
+    ["colonize", "coilínigh"],
+    ["excommunicate", "coinnealbháigh"],
+    ["consign", "coinsínigh"],
+    ["equate", "comardaigh"],
+    ["reciprocate", "cómhalartaigh"],
+    ["recriminate", "comhchoirigh"],
+    ["condense", "comhdhlúthaigh"],
+    ["coerce", "comhéignigh"],
+    ["cohere", "comhghreamaigh"],
+    ["co-ordinate", "comhordaigh"],
+    ["assimilate", "comhshamhlaigh"],
+    ["countersign", "comhshínigh"],
+    ["coincide", "comhtharlaigh"],
+    ["co-opt", "comhthogh"],
+    ["cork", "corcáil"],
+    ["crown", "corónaigh"],
+    ["incorporate", "corpraigh"],
+    ["cost", "costáil"],
+    ["gargle", "craosfholc"],
+    ["cremate", "créam"],
+    ["accredit", "creidiúnaigh"],
+    ["demarcate", "críochaigh"],
+    ["crystallize", "criostalaigh"],
+    ["back-fire", "cúltort"],
+    ["empower", "cumhachtaigh"],
+    ["count", "cuntais"],
+    ["dam", "dambáil"],
+    ["sculpture", "dealbhaigh"],
+    ["smoke", "deataigh"],
+    ["bisect", "déroinn"],
+    ["dial", "diailigh"],
+    ["glean", "diasraigh"],
+    ["disqualify", "dícháiligh"],
+    ["depopulate", "dídhaoinigh"],
+    ["disinfect", "díghalraigh"],
+    ["dehydrate", "díhiodráitigh"],
+    ["decentralize", "díláraigh"],
+    ["derive", "díorthaigh"],
+    ["dissect", "diosc"],
+    ["arraign", "díotchúisigh"],
+    ["bespatter", "draoibeáil"],
+    ["draft", "dréachtaigh"],
+    ["climb", "dreap"],
+    ["dredge", "dreideáil"],
+    ["drug", "drugáil"],
+    ["dump", "dumpáil"],
+    ["murder", "dúnmharaigh"],
+    ["coo", "durdáil"],
+    ["naturalize", "eadóirsigh"],
+    ["issue", "eisigh"],
+    ["welcome", "fáiltigh"],
+    ["bend", "feac"],
+    ["debit", "féichiúnaigh"],
+    ["inquire", "fiosraigh"],
+    ["orbit", "fithisigh"],
+    ["boil", "fiuch"],
+    ["whip", "fuipeáil"],
+    ["galvanize", "galbhánaigh"],
+    ["braise", "galstobh"],
+    ["guard", "gardáil"],
+    ["gaff", "gathaigh"],
+    ["gaff", "geafáil"],
+    ["pawn", "geallearb"],
+    ["shorten", "giorraigh"],
+    ["humour", "giúmaráil"],
+    ["lock", "glasáil"],
+    ["activate", "gníomhachtaigh"],
+    ["act", "gníomhaigh"],
+    ["counterfeit", "góchum"],
+    ["love", "gráigh"],
+    ["scrutinize", "grinnigh"],
+    ["brew", "grúdaigh"],
+    ["sound", "grúntáil"],
+    ["group", "grúpáil"],
+    ["pray", "guigh"],
+    ["hypnotize", "hiopnóisigh"],
+    ["oil", "íligh"],
+    ["immunize", "imdhíon"],
+    ["outline", "imlínigh"],
+    ["react", "imoibrigh"],
+    ["revolve", "imrothlaigh"],
+    ["circumscribe", "imscríobh"],
+    ["intern", "imtheorannaigh"],
+    ["purify", "íonaigh"],
+    ["incriminate", "ionchoirigh"],
+    ["incorporate", "ionchorpraigh"],
+    ["fossilize", "iontaisigh"],
+    ["enter", "iontráil"],
+    ["foster", "altramaigh"],
+    ["analyse", "anailísigh"],
+    ["reiterate", "athluaigh"],
+    ["refract", "athraon"],
+    ["bowl", "babhláil"],
+    ["bud", "bachlaigh"],
+    ["boycott", "baghcatáil"],
+    ["back", "baiceáil"],
+    ["bag", "baig"],
+    ["bruise", "ballbhrúigh"],
+    ["embalm", "balsamaigh"],
+    ["bank", "bancáil"],
+    ["bait", "baoiteáil"],
+    ["taper", "barrchaolaigh"],
+    ["crochet", "cróiseáil"],
+    ["cross", "crosáil"],
+    ["strengthen", "láidrigh"],
+    ["launch", "lainseáil"],
+    ["lance", "lansaigh"],
+    ["centralize", "láraigh"],
+    ["map", "léarscáiligh"],
+    ["electrify", "leictrigh"],
+    ["spread", "leitheadaigh"],
+    ["spell", "litrigh"],
+    ["accelerate", "luasghéaraigh"],
+    ["magnetize", "maighnéadaigh"],
+    ["churn", "maistrigh"],
+    ["curse", "mallaigh"],
+    ["kill", "maraigh"],
+    ["note", "nótáil"],
+    ["enrol", "rollaigh"],
+    ["roast", "róst"],
+    ["cycle", "rothaigh"],
+    ["enrich", "saibhrigh"],
+    ["sign", "saighneáil"],
+    ["harden", "cruaigh"],
+    ["milk", "crúigh"],
+    ["pelt", "crústaigh"],
+    ["ride", "marcaigh"],
+    ["market", "margaigh"],
+    ["finger", "méaraigh"],
+    ["mechanize", "meicnigh"],
+    ["prostitute", "meirdrigh"],
+    ["misappropriate", "mídhílsigh"],
+    ["sweeten", "milsigh"],
+    ["swear", "mionnaigh"],
+    ["menstruate", "míostraigh"],
+    ["vow", "móidigh"],
+    ["delay", "moilligh"],
+    ["monopolize", "monaplaigh"],
+    ["manufacture", "monaraigh"],
+    ["canonize", "naomhainmnigh"],
+    ["invalidate", "neamhbhailigh"],
+    ["burnish", "niamhghlan"],
+    ["wash", "nigh"],
+    ["mass-produce", "olltáirg"],
+    ["export", "onnmhairigh"],
+    ["honour", "onóraigh"],
+    ["gild", "óraigh"],
+    ["ornament", "ornáidigh"],
+    ["pollinate", "pailnigh"],
+    ["park", "páirceáil"],
+    ["pasteurize", "paistéar"],
+    ["patent", "paitinnigh"],
+    ["pawn", "pánáil"],
+    ["pare", "páráil"],
+    ["parse", "parsáil"],
+    ["sin", "peacaigh"],
+    ["personify", "pearsantaigh"],
+    ["pair", "péireáil"],
+    ["picket", "picéadaigh"],
+    ["peek", "píceáil"],
+    ["pilot", "píolótaigh"],
+    ["pitch", "pitseáil"],
+    ["plane", "plánáil"],
+    ["plant", "plandaigh"],
+    ["plaster", "plástráil"],
+    ["pleat", "pléatáil"],
+    ["police", "póilínigh"],
+    ["polarize", "polaraigh"],
+    ["steep", "portaigh"],
+    ["marry", "pós"],
+    ["braze", "prásáil"],
+    ["prime", "prímeáil"],
+    ["print", "priontáil"],
+    ["process", "próiseáil"],
+    ["pulverize", "púdraigh"],
+    ["powder", "púdráil"],
+    ["pump", "pumpáil"],
+    ["purge", "purgaigh"],
+    ["raffle", "raifleáil"],
+    ["row", "rámhaigh"],
+    ["rap", "rapáil"],
+    ["rasp", "raspáil"],
+    ["rate", "rátáil"],
+    ["guarantee", "ráthaigh"],
+    ["dance", "rinc"],
+    ["assign", "sann"],
+    ["scan", "scan"],
+    ["scandalize", "scannalaigh"],
+    ["skate", "scátáil"],
+    ["sketch", "sceitseáil"],
+    ["ski", "sciáil"],
+    ["skim", "scimeáil"],
+    ["snatch", "sciob"],
+    ["skip", "scipeáil"],
+    ["screw", "scriúáil"],
+    ["examine", "scrúdaigh"],
+    ["seal", "séalaigh"],
+    ["rivet", "seamaigh"],
+    ["spit", "seiligh"],
+    ["galvanize", "sincigh"],
+    ["syndicate", "sindeacáitigh"],
+    ["sign", "sínigh"],
+    ["synchronize", "sioncrónaigh"],
+    ["pacify", "síothaigh"],
+    ["sugar", "siúcraigh"],
+    ["shunt", "siúnt"],
+    ["joint", "siúntaigh"],
+    ["bat", "slac"],
+    ["isolate", "leithlisigh"],
+    ["appropriate", "leithreasaigh"],
+    ["tar", "tarráil"],
+    ["mobilize", "slóg"],
+    ["smock", "smocáil"],
+    ["smuggle", "smuigleáil"],
+    ["sniff", "smúr"],
+    ["polish", "snasaigh"],
+    ["date", "dátaigh"],
+    ["decimate", "deachaigh"],
+    ["decimalize", "deachúlaigh"],
+    ["deepen", "doimhnigh"],
+    ["magnify", "formhéadaigh"],
+    ["approve", "formheas"],
+    ["endorse", "formhuinigh"],
+    ["fry", "frioch"],
+    ["counteract", "frithbheartaigh"],
+    ["glue", "gliúáil"],
+    ["glorify", "glóirigh"],
+    ["glaze", "glónraigh"],
+    ["gel", "glóthaigh"],
+    ["invest", "infheistigh"],
+    ["index", "innéacsaigh"],
+    ["inseminate", "inseamhnaigh"],
+    ["infiltrate", "insíothlaigh"],
+    ["insulate", "insligh"],
+    ["inject", "insteall"],
+    ["libel", "leabhlaigh"],
+    ["scorch", "ruadhóigh"],
+    ["redden", "ruaigh"],
+    ["solder", "sádráil"],
+    ["simplify", "simpligh"],
+    ["circumcise", "timpeallghearr"],
+    ["specialize", "speisialaigh"],
+    ["splice", "spladhsáil"],
+    ["spray", "spraeáil"],
+    ["sponge", "spúinseáil"],
+    ["wire", "sreangaigh"],
+    ["starch", "stáirseáil"],
+    ["stage", "stáitsigh"],
+    ["stamp", "stampáil"],
+    ["stare", "stán"],
+    ["staple", "stápláil"],
+    ["sterilize", "steiriligh"],
+    ["stew", "stobh"],
+    ["cement", "stroighnigh"],
+    ["strip", "struipeáil"],
+    ["add", "suimigh"],
+    ["suck", "súraic"],
+    ["tabulate", "táblaigh"],
+    ["nail", "tairneáil"],
+    ["televise", "teilifísigh"],
+    ["industrialize", "tionsclaigh"],
+    ["wind", "tochrais"],
+    ["toast", "tóstáil"],
+    ["transpose", "trasuigh"],
+    ["characterize", "tréithrigh"],
+    ["dry", "triomaigh"],
+    ["adulterate", "truaillmheasc"],
+    ["report", "tuairiscigh"],
+    ["laicize", "tuathaigh"],
+    ["flood-light", "tuilsoilsigh"],
+    ["adopt", "uchtaigh"],
+    ["number", "uimhrigh"],
+    ["anoint", "ung"],
+    ["eclipse", "uraigh"],
+    ["discharge", "urscaoil"],
+    ["vaccinate", "vacsaínigh"],
+    ["waltz", "válsáil"],
+    ["waste", "vástáil"],
+    ["x-ray", "x-ghathaigh"],
     ["do","déan"],
     ["say","abair"],
     ["eat", "ith"],
@@ -147,11 +447,11 @@ var shortVerbList = [
     ["decide","socraigh"],
     ["catch","beir"],
     ["pull","tarraing"]
-  ]; //this list contains 84 verbs
+  ]; 
 
 
 app.get('/', function (req, res) {
-    res.render('index.ejs', {text1: null, text2: null, text3: null, text4: null, text5: null, text6: null, text7: null, error: null});
+    res.render('index.ejs', {text1: null, text2: null, text3: null, text4: null, text5: null, error: null});
   })
   
 app.listen(3000, function () {
@@ -166,25 +466,15 @@ app.post('/', function (req, res) {
 
     var verb = "";
     var englishVerbs = [];
-    var englishNouns = [];
-    var irishNouns = [];
-    var englishAdjs = [];
-    var irishAdjs = [];
+
     var irishVerbResult = [];
 
     var q = 0;
-    var z = 0;
-    var y = 0;
 
     var englishVerb = "";
     var irishVerb = "";
     var irishPos = "";
 
-    var englishNoun = "";
-    var irishNoun = "";
-
-    var englishAdj = "";
-    var irishAdj = "";
     
     var irishVerbResult1 = "";
     var go = false;
@@ -193,44 +483,6 @@ app.post('/', function (req, res) {
     for(i=0; i<tagged.length; i++)
     {
             console.log(tagged[i]);
-
-            if(tagged[i].pos == "NN")
-            {
-                englishNoun = tagged[i].value;
-
-                for(j=0; j<shortNounList.length; j++)
-                {
-                    if(shortNounList[j][0]==englishNoun)
-                    {
-                        irishNoun = shortNounList[j][1];
-                    }
-                }
-
-                englishNouns[z] = englishNoun;
-                irishNouns[z] = irishNoun;
-
-                z++;
-
-            }
-
-            if(tagged[i].pos == "JJ")
-            {
-                englishAdj = tagged[i].value;
-
-                for(j=0; j<shortAdjList.length; j++)
-                {
-                    if(shortAdjList[j][0]==englishAdj)
-                    {
-                        irishAdj = shortAdjList[j][1];
-                    }
-                }
-
-                englishAdjs[y] = englishAdj;
-                irishAdjs[y] = irishAdj;
-
-                y++;
-
-            }
            
 
             if(tagged[i].pos == "VBD")
@@ -656,8 +908,7 @@ app.post('/', function (req, res) {
             var text3 = t2;
             var text4 = "The English translation of the Irish is the same as the original text.";
             var text5 = "";
-            var text6 = "";
-            var text7 = "";
+            
             if(input !== t2)
             { 
                 text4 = "The English translation of the Irish is not the same as the text you entered.";
@@ -666,7 +917,7 @@ app.post('/', function (req, res) {
             for(j=0;j<irishVerbResult.length;j++)
             {
                 console.log(irishVerbResult[j]);
-                if(t1LowerCase.indexOf(irishVerbResult[j])==-1)
+                if(t1LowerCase.indexOf(irishVerbResult[j])==-1&&(irishVerbResult[j].indexOf("?")==-1))
                 {
                 
                 text5 += "The text you entered contained the verb \"" + englishVerbs[j] + "\", which, in this context, could be translated as \"" + irishVerbResult[j] + "\". ";
@@ -674,30 +925,11 @@ app.post('/', function (req, res) {
                 }
             }
 
-            for(j=0;j<irishNouns.length;j++)
-            {
-                if(t1LowerCase.indexOf(irishNouns[j])==-1)
-                {
-                
-                text6 += "The text you entered contained the noun \"" + englishNouns[j] + "\", which could be translated as \"" + irishNouns[j] + "\". ";
-                
-                }
-            }
 
-            for(j=0;j<irishAdjs.length;j++)
-            {
-                if(t1LowerCase.indexOf(irishAdjs[j])==-1)
-                {
-                
-                text7 += "The text you entered contained the adjective \"" + englishAdjs[j] + "\", which could be translated as \"" + irishAdjs[j] + "\". ";
-                
-                }
-            }
-
-            res.render('index.ejs', {text1: text1, text2: text2, text3: text3, text4: text4, text5: text5, text6: text6, text7: text7, error: null});
+            res.render('index.ejs', {text1: text1, text2: text2, text3: text3, text4: text4, text5: text5, error: null});
       })
     }).catch(err => {
-        res.render('index.ejs', {text1: null, text2: null, text3: null, text4: null, text5: null, text6: null, text7: null, error: 'Error, please try again'});
+        res.render('index.ejs', {text1: null, text2: null, text3: null, text4: null, text5: null, error: 'Error, please try again'});
     })
 
 
